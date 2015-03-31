@@ -62,14 +62,14 @@ ARG_WITH_SUBST([routing-table],      [220], [set routing table to use for IPsec 
 ARG_WITH_SUBST([routing-table-prio], [220], [set priority for IPsec routing table])
 ARG_WITH_SUBST([ipsec-script],       [ipsec], [change the name of the ipsec script])
 ARG_WITH_SUBST([fips-mode],          [0], [set openssl FIPS mode: disabled(0), enabled(1), Suite B enabled(2)])
+ARG_WITH_SUBST([rubygemdir],         [${datadir%/}/strongswan/ruby], [path to install ruby gems to])
+ARG_WITH_SUBST([pythoneggdir],       [${datadir%/}/strongswan/python], [path to install python eggs to to])
 
 ARG_WITH_SET([tss],                  [no], [set implementation of the Trusted Computing Group's Software Stack (TSS). Currently the only supported value is "trousers"])
 ARG_WITH_SET([capabilities],         [no], [set capability dropping library. Currently supported values are "libcap" and "native"])
 ARG_WITH_SET([mpz_powm_sec],         [yes], [use the more side-channel resistant mpz_powm_sec in libgmp, if available])
 ARG_WITH_SET([dev-headers],          [no], [install strongSwan development headers to directory.])
 ARG_WITH_SET([printf-hooks],         [auto], [force the use of a specific printf hook implementation (auto, builtin, glibc, vstr).])
-ARG_WITH_SET([rubygemdir],           ["gem environment gemdir"], [path to install ruby gems to])
-ARG_WITH_SET([pythoneggdir],         ["main site-packages directory"], [path to install python eggs to to])
 
 if test -n "$PKG_CONFIG"; then
 	systemdsystemunitdir_default=$($PKG_CONFIG --variable=systemdsystemunitdir systemd)
@@ -1182,22 +1182,9 @@ if test x$ruby_gems = xtrue; then
 	if test x$GEM = x; then
 		AC_MSG_ERROR(RubyGems package manager not found)
 	fi
-	if test "x$rubygemdir" = "xgem environment gemdir"; then
-		rubygemdir=$($GEM environment gemdir)
-	fi
-	AC_SUBST(RUBYGEMDIR, "$rubygemdir")
 fi
 
 if test x$python_eggs = xtrue; then
-	AC_PATH_PROG([EASY_INSTALL], [easy_install], [], [$PATH:/bin:/usr/bin:/usr/local/bin])
-	if test x$EASY_INSTALL = x; then
-		AC_MSG_ERROR(Python easy_install not found)
-	fi
-	if test "x$pythoneggdir" = "xmain site-packages directory"; then
-		AC_SUBST(PYTHONEGGINSTALLDIR, "")
-	else
-		AC_SUBST(PYTHONEGGINSTALLDIR, "--install-dir $pythoneggdir")
-	fi
 	AC_PATH_PROG([PY_TEST], [py.test], [], [$PATH:/bin:/usr/bin:/usr/local/bin])
 fi
 

@@ -24,9 +24,7 @@ clean-local:
 	(cd $(srcdir); [ ! -f setup.py ] || $(PYTHON) setup.py clean -a)
 	rm -rf $(srcdir)/setup.py $(srcdir)/vici.egg-info $(builddir)/dist
 
-install-exec-local: dist/vici-$(PACKAGE_VERSION)-py$(PYTHON_VERSION).egg
-	$(EASY_INSTALL) $(PYTHONEGGINSTALLDIR) \
-		dist/vici-$(PACKAGE_VERSION)-py$(PYTHON_VERSION).egg
+pythonegg_DATA = dist/vici-$(PACKAGE_VERSION)-py$(PYTHON_VERSION).egg
 
 if USE_PY_TEST
   TESTS = $(PY_TEST)
