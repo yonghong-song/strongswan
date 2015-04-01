@@ -46,13 +46,14 @@ ENUM_NEXT(encryption_algorithm_names, ENCR_CAMELLIA_CBC, ENCR_CAMELLIA_CCM_ICV16
 	"CAMELLIA_CCM_8",
 	"CAMELLIA_CCM_12",
 	"CAMELLIA_CCM_16");
-ENUM_NEXT(encryption_algorithm_names, ENCR_UNDEFINED, ENCR_RC2_CBC, ENCR_CAMELLIA_CCM_ICV16,
+ENUM_NEXT(encryption_algorithm_names, ENCR_UNDEFINED, ENCR_CHACHA20_POLY1305, ENCR_CAMELLIA_CCM_ICV16,
 	"UNDEFINED",
 	"DES_ECB",
 	"SERPENT_CBC",
 	"TWOFISH_CBC",
-	"RC2_CBC");
-ENUM_END(encryption_algorithm_names, ENCR_RC2_CBC);
+	"RC2_CBC",
+	"CHACHA20_POLY1305");
+ENUM_END(encryption_algorithm_names, ENCR_CHACHA20_POLY1305);
 
 /*
  * Described in header.
@@ -184,6 +185,7 @@ bool encryption_algorithm_is_aead(encryption_algorithm_t alg)
 		case ENCR_CAMELLIA_CCM_ICV8:
 		case ENCR_CAMELLIA_CCM_ICV12:
 		case ENCR_CAMELLIA_CCM_ICV16:
+		case ENCR_CHACHA20_POLY1305:
 			return TRUE;
 		default:
 			return FALSE;
