@@ -14,3 +14,4 @@
  */
 
 TEST_SUITE(mem_pool_suite_create)
+TEST_SUITE_DEPEND(message_suite_create_chapoly, AEAD, ENCR_CHACHA20_POLY1305, 32)
