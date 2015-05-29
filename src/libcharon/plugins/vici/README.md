@@ -673,6 +673,28 @@ _list-certs_ command.
 		data = <ASN1 encoded certificate data>
 	}
 
+### ike-updown ###
+
+The _ike-updown_ event is issued when an IKE_SA is established or terminated.
+
+	{
+		up = <yes or no>
+		<IKE_SA config name> = {
+			<same data as in the list-sas event, but without child-sas section>
+		}
+	}
+
+### child-updown ###
+
+The _child-updown_ event is issued when a CHILD_SA is established or terminated.
+
+	{
+		up = <yes or no>
+		<IKE_SA config name> = {
+			<same data as in the list-sas event, but with only the affected
+			 CHILD_SA in the child-sas section>
+		}
+	}
 
 # libvici C client library #
 
