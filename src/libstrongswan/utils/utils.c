@@ -22,6 +22,23 @@
 # include <signal.h>
 #endif
 
+#if defined(__linux__) && defined(HAVE_SYS_SYSCALL_H)
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
+# include <ctype.h>
+# include <sys/syscall.h>
+/* This is from the kernel sources.  We limit the length of directory names to
+ * 256 as we only use it to enumerate FDs. */
+struct linux_dirent64 {
+	u_int64_t d_ino;
+	int64_t d_off;
+	unsigned short	d_reclen;
+	unsigned char d_type;
+	char d_name[256];
+};
+#endif /* defined(__linux__) && defined(HAVE_SYS_SYSCALL_H) */
+
 #include <library.h>
 #include <collections/enumerator.h>
 
@@ -112,10 +129,46 @@ void wait_sigint()
  */
 void closefrom(int lowfd)
 {
-	char fd_dir[PATH_MAX];
 	int maxfd, fd, len;
 
 	/* try to close only open file descriptors on Linux... */
+#if defined(__linux__) && defined(HAVE_SYS_SYSCALL_H)
+	/* By directly using a syscall we avoid any calls that might be unsafe after
+	 * fork() (e.g. malloc()). */
+	char buffer[sizeof(struct linux_dirent64)];
+	struct linux_dirent64 *entry;
+	int dirfd, offset;
+
+	dirfd = open("/proc/self/fd", O_RDONLY);
+	if (dirfd != -1)
+	{
+		while ((len = syscall(SYS_getdents64, dirfd, buffer,
+							  sizeof(buffer))) > 0)
+		{
+			for (offset = 0; offset < len; offset += entry->d_reclen)
+			{
+				entry = (struct linux_dirent64*)(buffer + offset);
+				if (!isdigit(entry->d_name[0]))
+				{
+					continue;
+				}
+				fd = atoi(entry->d_name);
+				if (fd != dirfd && fd >= lowfd)
+				{
+					close(fd);
+				}
+			}
+		}
+		close(dirfd);
+		return;
+	}
+#else /* !defined(__linux__) || !defined(HAVE_SYS_SYSCALL_H) */
+	/* This makes our closefrom() implementation potentially unsafe to call
+	 * after fork() due to the allocations (even directly calling opendir()
+	 * requires one).  Depends on how the malloc() implementation handles such
+	 * situations. */
+	char fd_dir[PATH_MAX];
+
 	len = snprintf(fd_dir, sizeof(fd_dir), "/proc/%u/fd", getpid());
 	if (len > 0 && len < sizeof(fd_dir) && access(fd_dir, F_OK) == 0)
 	{
@@ -135,6 +188,7 @@ void closefrom(int lowfd)
 			return;
 		}
 	}
+#endif /* defined(__linux__) && defined(HAVE_SYS_SYSCALL_H) */
 
 	/* ...fall back to closing all fds otherwise */
 #ifdef WIN32
