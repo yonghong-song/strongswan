@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Tobias Brunner
+ * Copyright (C) 2012-2015 Tobias Brunner
  * Copyright (C) 2005-2007 Martin Willi
  * Copyright (C) 2005 Jan Hutter
  * Hochschule fuer Technik Rapperswil
@@ -253,5 +253,14 @@ ike_cfg_t *ike_cfg_create(ike_version_t version, bool certreq, bool force_encap,
 						  char *me, u_int16_t my_port,
 						  char *other, u_int16_t other_port,
 						  fragmentation_t fragmentation, u_int8_t dscp);
+
+/**
+ * Determine the address family of the local address(es).  If multiple families
+ * are configured AF_UNSPEC is returned.  %any is ignored.
+ *
+ * @return					address family of local address(es) if distinct
+ */
+int ike_cfg_my_family(ike_cfg_t *this);
+
 
 #endif /** IKE_CFG_H_ @}*/
