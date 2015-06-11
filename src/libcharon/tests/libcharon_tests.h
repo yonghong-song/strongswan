@@ -13,4 +13,5 @@
  * for more details.
  */
 
+TEST_SUITE(ike_cfg_suite_create)
 TEST_SUITE(mem_pool_suite_create)
