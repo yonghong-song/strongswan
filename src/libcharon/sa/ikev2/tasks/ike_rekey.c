@@ -335,9 +335,9 @@ METHOD(task_t, process_i, status_t,
 				{
 					charon->ike_sa_manager->checkin(
 								charon->ike_sa_manager, this->new_sa);
-					/* set threads active IKE_SA after checkin */
-					charon->bus->set_sa(charon->bus, this->ike_sa);
 				}
+				/* set threads active IKE_SA after checkin or destroy */
+				charon->bus->set_sa(charon->bus, this->ike_sa);
 				this->new_sa = NULL;
 				establish_new(other);
 				return SUCCESS;
@@ -384,6 +384,7 @@ METHOD(task_t, migrate, void,
 		this->ike_delete->task.destroy(&this->ike_delete->task);
 	}
 	DESTROY_IF(this->new_sa);
+	charon->bus->set_sa(charon->bus, ike_sa);
 	DESTROY_IF(this->collision);
 
 	this->collision = NULL;
@@ -405,6 +406,7 @@ METHOD(task_t, destroy, void,
 		this->ike_delete->task.destroy(&this->ike_delete->task);
 	}
 	DESTROY_IF(this->new_sa);
+	charon->bus->set_sa(charon->bus, this->ike_sa);
 	DESTROY_IF(this->collision);
 	free(this);
 }
