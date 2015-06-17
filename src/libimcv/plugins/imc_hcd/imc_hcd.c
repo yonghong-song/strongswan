@@ -36,7 +36,12 @@
 static const char imc_name[] = "HCD";
 
 static pen_type_t msg_types[] = {
-	{ PEN_PWG, PA_SUBTYPE_PWG_HCD }
+	{ PEN_PWG, PA_SUBTYPE_PWG_HCD_SYSTEM },
+	{ PEN_PWG, PA_SUBTYPE_PWG_HCD_CONSOLE },
+	{ PEN_PWG, PA_SUBTYPE_PWG_HCD_MARKER },
+	{ PEN_PWG, PA_SUBTYPE_PWG_HCD_FINISHER },
+	{ PEN_PWG, PA_SUBTYPE_PWG_HCD_INTERFACE },
+	{ PEN_PWG, PA_SUBTYPE_PWG_HCD_SCANNER }
 };
 
 static imc_agent_t *imc_hcd;
