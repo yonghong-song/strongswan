@@ -94,6 +94,14 @@
 #              the peer's own IP address / max (where  max  is  32
 #              for IPv4 and 128 for IPv6).
 #
+#       PLUTO_PEER_SOURCEIP
+#       PLUTO_PEER_SOURCEIP4_$i
+#       PLUTO_PEER_SOURCEIP6_$i
+#              contains IPv4/IPv6 virtual IP sent to an initiator,
+#              $i enumerates from 1 to the number of IP per address family.
+#              PLUTO_PEER_SOURCEIP is a legacy variable and equals to the first
+#              virtual IP, IPv4 or IPv6.
+#
 #       PLUTO_PEER_PROTOCOL
 #              is the IP protocol that will be transported.
 #
